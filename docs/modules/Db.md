@@ -156,13 +156,13 @@ Example:
 
 ``` php
 <?php
-$I->seeInDatabase('users', array('name' => 'Davert', 'email' => 'davert * `mail.com'));` 
+$I->seeInDatabase('users', array('name' => 'Davert', 'email LIKE' => 'davert%'));` 
 
 ```
 Will generate:
 
 ``` sql
-SELECT COUNT(*) FROM `users` WHERE `name` = 'Davert' AND `email` = 'davert * `mail.com'` 
+SELECT COUNT(*) FROM `users` WHERE `name` = 'Davert' AND `email` LIKE 'davert%' 
 ```
 Fails if no such user found.
 
