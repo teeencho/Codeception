@@ -24,7 +24,8 @@ class Locator
      * ?>
      * ```
      *
-     * This will search for `Title` text in either `h1`, `h2`, or `h3` tag. You can also combine CSS selector with XPath locator:
+     * This will search for `Title` text in either `h1`, `h2`, or `h3` tag.
+     * You can also combine CSS selector with XPath locator:
      *
      * ```php
      * <?php
@@ -126,6 +127,13 @@ class Locator
     /**
      * Finds element by it's attribute(s)
      *
+     * ```php
+     * <?php
+     * use \Codeception\Util\Locator;
+     *
+     * $I->seeElement(Locator::find('img', ['title' => 'diagram']));
+     * ```
+     *
      * @static
      *
      * @param $element
@@ -147,6 +155,8 @@ class Locator
     }
 
     /**
+     * Checks that provided string is CSS selector
+     *
      * @param $selector
      * @return bool
      */
@@ -175,7 +185,8 @@ class Locator
 
     /**
      * Checks that string and CSS selector for element by ID
-     *
+     * @param $id
+     * @return bool
      */
     public static function isID($id)
     {
@@ -187,6 +198,9 @@ class Locator
      * Either CSS or XPath locator can be passed, however they will be converted to XPath.
      *
      * ```php
+     * <?php
+     * use Codeception\Util\Locator;
+     *
      * Locator::contains('label', 'Name'); // label containing name
      * Locator::contains('div[@contenteditable=true]', 'hello world');
      * ```
@@ -208,6 +222,9 @@ class Locator
      * First element has index 1
      *
      * ```php
+     * <?php
+     * use Codeception\Util\Locator;
+     *
      * Locator::elementAt('//table/tr', 2); // second row
      * Locator::elementAt('//table/tr', -1); // last row
      * Locator::elementAt('table#grind>tr', -2); // previous than last row
@@ -224,7 +241,9 @@ class Locator
             $position = 'last()-'.abs($position);
         }
         if ($position === 0) {
-            throw new \InvalidArgumentException('0 is not valid element position. XPath expects first element to have index 1');
+            throw new \InvalidArgumentException(
+                '0 is not valid element position. XPath expects first element to have index 1'
+            );
         }
         return sprintf('(%s)[position()=%s]', self::toXPath($element), $position);
     }
@@ -235,6 +254,9 @@ class Locator
      * Equal to `Locator::elementAt($locator, 1)`
      *
      * ```php
+     * <?php
+     * use Codeception\Util\Locator;
+     *
      * Locator::firstElement('//table/tr');
      * ```
      *
@@ -252,9 +274,12 @@ class Locator
      * Equal to `Locator::elementAt($locator, -1)`
      *
      * ```php
+     * <?php
+     * use Codeception\Util\Locator;
+     *
      * Locator::lastElement('//table/tr');
      * ```
-     * 
+     *
      * @param $element
      * @return mixed
      */
@@ -271,21 +296,21 @@ class Locator
      */
     public static function humanReadableString($selector)
     {
-       if (is_string($selector)) {
-          return "'$selector'";
-       }
-       if (is_array($selector)) {
-          $type = strtolower(key($selector));
-          $locator = $selector[$type];
-          return "$type '$locator'";
-       }
-       if (class_exists('\Facebook\WebDriver\WebDriverBy')) {
-          if ($selector instanceof \Facebook\WebDriver\WebDriverBy) {
-             $type = $selector->getMechanism();
-             $locator = $selector->getValue();
-             return "$type '$locator'";
-          }
-       }
-       throw new \InvalidArgumentException("Unrecognized selector");
+        if (is_string($selector)) {
+            return "'$selector'";
+        }
+        if (is_array($selector)) {
+            $type = strtolower(key($selector));
+            $locator = $selector[$type];
+            return "$type '$locator'";
+        }
+        if (class_exists('\Facebook\WebDriver\WebDriverBy')) {
+            if ($selector instanceof \Facebook\WebDriver\WebDriverBy) {
+                $type = $selector->getMechanism();
+                $locator = $selector->getValue();
+                return "$type '$locator'";
+            }
+        }
+        throw new \InvalidArgumentException("Unrecognized selector");
     }
 }
